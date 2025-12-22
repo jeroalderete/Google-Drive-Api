@@ -7,7 +7,13 @@ import cors from 'cors';
 
 dotenv.config();
 const app = express();
-app.use(cors({ origin: 'http://localhost:8080', credentials: true }));
+app.use(cors({
+  origin: [
+    'http://localhost:8080',
+    'https://google-drive-api-production-2e3b.up.railway.app'
+  ],
+  credentials: true
+}));
 app.use(express.json());
 
 // ========================================================== //
