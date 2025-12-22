@@ -170,8 +170,16 @@ app.post('/upload', requireGoogleAuth, upload.single('file'), async (req, res) =
 // =======================
 app.get('/drive/files', requireGoogleAuth, async (req, res) => {
   try {
+
     const drive = google.drive({ version: 'v3', auth: oauth2Client });
-    const folderId = process.env.GOOGLE_DRIVE_FOLDER_ID;
+    // const folderId = process.env.GOOGLE_DRIVE_FOLDER_ID;
+    const folderId = req.query.folderId;
+
+    if (!folderId) {
+      return res.status(400).json({ error: 'folderId is required' });
+    }
+
+
 
     const response = await drive.files.list({
       q: `'${folderId}' in parents and trashed=false`,
