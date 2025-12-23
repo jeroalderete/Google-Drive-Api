@@ -122,15 +122,16 @@ app.get('/v1/callback', async (req, res) => {
 // =======================
 // Subir archivo a Drive
 // =======================
-async function uploadToDrive(filePath, fileName) {
+async function uploadToDrive(filePath, fileName, folderId) {
   const drive = google.drive({ version: 'v3', auth: oauth2Client });
   const file = await drive.files.create({
     requestBody: {
       name: fileName,
-      parents: [process.env.GOOGLE_DRIVE_FOLDER_ID]
+      parents: [folderId],
     },
     media: { body: fs.createReadStream(filePath) },
   });
+
 
   // Dar permiso de lectura a todos (opcional)
   await drive.permissions.create({
@@ -150,10 +151,16 @@ async function uploadToDrive(filePath, fileName) {
 // Endpoint upload
 // =======================
 app.post('/upload', requireGoogleAuth, upload.single('file'), async (req, res) => {
+  const { folderId } = req.body;
+
   try {
     if (!req.file) return res.status(400).json({ error: 'No file uploaded' });
 
-    const result = await uploadToDrive(req.file.path, req.file.originalname);
+    const result = await uploadToDrive(
+      req.file.path,
+      req.file.originalname,
+      folderId // 👈 dinámico
+    );
     fs.unlinkSync(req.file.path);
 
     res.json({ success: true, fileId: result.id, name: result.name });
