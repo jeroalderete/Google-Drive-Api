@@ -186,7 +186,12 @@ app.get('/drive/files', requireGoogleAuth, async (req, res) => {
       return res.status(400).json({ error: 'folderId is required' });
     }
 
-
+    const AUDIO_MIME_TYPES = [
+      'audio/',
+      'video/mp4',
+      'video/quicktime', // .mov con audio
+      'video/x-m4v',
+    ];
 
     const response = await drive.files.list({
       q: `'${folderId}' in parents and trashed=false`,
@@ -195,7 +200,13 @@ app.get('/drive/files', requireGoogleAuth, async (req, res) => {
     });
 
     const files = response.data.files
-      .filter(f => f.mimeType?.startsWith('audio/'))
+      .filter(f =>
+        AUDIO_MIME_TYPES.some(type =>
+          type.endsWith('/')
+            ? f.mimeType?.startsWith(type)
+            : f.mimeType === type
+        )
+      )
       .map(f => ({
         id: f.id,
         name: f.name,
