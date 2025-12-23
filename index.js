@@ -195,7 +195,7 @@ app.get('/drive/files', requireGoogleAuth, async (req, res) => {
     });
 
     const files = response.data.files
-      .filter(f => f.name.match(/\.(mp3|wav)$/i))
+      .filter(f => f.mimeType?.startsWith('audio/'))
       .map(f => ({
         id: f.id,
         name: f.name,
