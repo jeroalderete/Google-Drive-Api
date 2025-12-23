@@ -10,7 +10,7 @@ const app = express();
 app.use(cors({
   origin: [
     'http://localhost:8080',
-    'https://google-drive-api-production-2e3b.up.railway.app'
+    'https://aldo-records.vercel.app'
   ],
   credentials: true
 }));
@@ -40,6 +40,10 @@ app.delete('/drive/delete/:id', requireGoogleAuth, async (req, res) => {
     if (!fileId) return res.status(400).json({ error: 'No file ID provided' });
 
     const drive = google.drive({ version: 'v3', auth: oauth2Client });
+
+
+
+
 
     await drive.files.delete({ fileId });
 
