@@ -10,7 +10,8 @@ const app = express();
 app.use(cors({
   origin: [
     'http://localhost:8080',
-    'https://aldo-records.vercel.app'
+    'https://aldo-records.vercel.app',
+    'https://aldo-records.vercel.app/aicoach'
   ],
   credentials: true
 }));
